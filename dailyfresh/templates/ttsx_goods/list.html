@@ -1,0 +1,115 @@
+{% extends 'ttsx_goods/base.html' %}
+
+    {% block head %}
+        <script>
+            function addcart(gid) {
+                $.get('/islogin/',function (data) {
+                    // 如果登陆，则添加商品倒购物车
+                    if(data.islogin){
+                        $.get('/cart/add/',{'gid':gid},function (data) {
+                          if(data.isadd){
+                              alert('购买成功')
+                          } else{
+                              alert('购买失败')
+                          }
+                        })
+                    }else{
+                        //如果没有则跳转到登陆页面
+                        location.href = '/login/';
+                    }　
+                })
+            }
+            $(function () {
+                if('{{ sid }}' == '1'){$('.sort_bar a:first').addClass('active')}
+                else if('{{ sid }}' == '2'){$('.sort_bar a:first').next().addClass('active')}
+                else{$('.sort_bar a:first').next().next().addClass('active')}
+            });
+        </script>
+    {% endblock head %}
+    {% block detail %}
+        <div class="breadcrumb">
+            <a href="#">全部分类</a>
+            <span>></span>
+            <a href="#">{{ t1.ttitle }}</a>
+        </div>
+    {% endblock detail %}
+
+
+    {% block right %}
+    <div class="r_wrap fr clearfix">
+        <div class="sort_bar">
+            <a href="/list{{ t1.id }}_1_1/" >默认</a>
+            <a href="/list{{ t1.id }}_1_2/?p={{ num }}">价格</a>
+            <a href="/list{{ t1.id }}_1_3/">人气</a>
+        </div>
+
+        <ul class="goods_type_list clearfix">
+            {% for good1 in page.object_list %}
+            <li>
+                <a href="/detail{{ good1.id }}/"><img src="/static/{{ good1.gpic }}"></a>
+                <h4><a href="/detail{{ good1.id }}/">{{ good1.gtitle }}</a></h4>
+                <div class="operate">
+                    <span class="prize">￥{{ good1.gprice }}</span>
+                    <span class="unit">{{ good1.gprice }}/{{ good1.gunit }}</span>
+                    <a href="javascript:addcart({{ good1.id }})" class="add_goods" title="加入购物车"></a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagenation">
+            {% if page.has_previous %}
+            <a href="/list{{ t1.id }}_{{ page.number|add:-1 }}_{{ sid }}/"><上一页</a>
+            <a href="/list{{ t1.id }}_１_{{ sid }}/">首页</a>
+            {% endif %}
+            {% if page.paginator.num_pages < 5 %}
+
+                {% for pindex in page.paginator.page_range %}
+                    {% if pindex == page.number %}
+                        <a href="/list{{ t1.id }}_{{ pindex }}_{{ sid }}/" class="active">{{ pindex }}</a>
+                    {% else %}
+                        <a href="/list{{ t1.id }}_{{ pindex }}_{{ sid }}/">{{ pindex }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% if page.number == 1 %}
+                    <a href="/list{{ t1.id }}_1_{{ sid }}/" class="active">1</a>
+                    <a href="/list{{ t1.id }}_2_{{ sid }}/">2</a>
+                    <a href="/list{{ t1.id }}_3_{{ sid }}/">3</a>
+                    <a href="/list{{ t1.id }}_4_{{ sid }}/">4</a>
+                    <a href="/list{{ t1.id }}_5_{{ sid }}/">5</a>
+                {% elif page.number == 2 %}
+                    <a href="/list{{ t1.id }}_1_{{ sid }}/">1</a>
+                    <a href="/list{{ t1.id }}_2_{{ sid }}/"class="active">2</a>
+                    <a href="/list{{ t1.id }}_3_{{ sid }}/">3</a>
+                    <a href="/list{{ t1.id }}_4_{{ sid }}/">4</a>
+                    <a href="/list{{ t1.id }}_5_{{ sid }}/">5</a>
+
+                {%  elif page.number == page.paginator.num_pages|add:-1 %}
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-4 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-4 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-3 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-3 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-2 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-2 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-1 }}_{{ sid }}/" class="active">{{ page.paginator.num_pages|add:-1 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages }}_{{ sid }}/">{{ page.paginator.num_pages }}</a>
+                {%  elif page.number == page.paginator.num_pages %}
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-4 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-4 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-3 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-3 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-2 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-2 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages|add:-1 }}_{{ sid }}/">{{ page.paginator.num_pages|add:-1 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.paginator.num_pages }}_{{ sid }}/" class="active">{{ page.paginator.num_pages }}</a>
+                {% else %}
+                    <a href="/list{{ t1.id }}_{{ page.number|add:-2}}_{{ sid }}/">{{ page.number|add:-2 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.number|add:-1}}_{{ sid }}/">{{ page.number|add:-1 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.number}}_{{ sid }}/" class="active">{{ page.number }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.number|add:1}}_{{ sid }}/">{{ page.number|add:1 }}</a>
+                    <a href="/list{{ t1.id }}_{{ page.number|add:2}}_{{ sid }}/">{{ page.number|add:2 }}</a>
+                {% endif %}
+            {% endif %}}
+            {% if page.has_next %}
+                <a href="/list{{ t1.id }}_{{ page.number|add:1 }}_{{ sid }}/">下一页></a>
+                <a href="/list{{ t1.id }}_{{ page.paginator.num_pages }}_{{ sid }}/">末页</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock right%}
+

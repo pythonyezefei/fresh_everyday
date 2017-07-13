@@ -1,0 +1,25 @@
+# coding=utf-8
+from django.db import models
+from tinymce.models import HTMLField
+
+# Create your models here.
+
+# 商品类型类
+class TypeInfo(models.Model):
+    ttitle = models.CharField(max_length=20)
+    isDelete = models.BooleanField(default=False)
+    def __str__(self):
+        return self.ttitle.encode('utf-8')
+
+# 商品类
+class GoodsInfo(models.Model):
+    gtitle = models.CharField(max_length=20)
+    gpic = models.ImageField(upload_to='goods/')
+    gprice = models.DecimalField(max_digits=5, decimal_places=2)
+    gclick = models.IntegerField()
+    gunit = models.CharField(max_length=20)
+    isDelete = models.BooleanField(default=False)
+    gsubtitle = models.CharField(max_length=100)
+    gkucun = models.IntegerField(default=100)
+    gcontent = HTMLField()
+    gtype = models.ForeignKey('TypeInfo')
